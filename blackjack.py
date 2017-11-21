@@ -76,7 +76,7 @@ def game():
 # Ставка игрока
 def betPlayer():
     bet = int(input('Choose your bet: '))
-    while bet > money:
+    while bet > money or bet < 0:
         bet = int(input('You don\'t have so much money. Try again: '))
     return bet
 
