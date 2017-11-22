@@ -1,21 +1,14 @@
-import random # Подключаем библиотеки
+import random
 
+LIMIT = 21
 cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'B', 'D', 'K', 'A'] # Колода карт
 money = 100 # Начальный баланс игрока
 
-# Вывод разданных карт
 def getStatus():
     print('Player:', player, ' Dealer: ', dealer)
 
-# Подсчитывание очков
 def getSum(hand):
-    sum = 0
-    for card in hand:
-        if card != 'A':
-            if card == 'B' or card == 'D' or card == 'K':
-                sum += 10
-            else:
-                sum += card
+    sum = countNum(hand)
     for card in hand:
         if card == 'A':
             if sum > 10:
@@ -24,46 +17,51 @@ def getSum(hand):
                 sum += 11
     return sum
 
-# Раздача карт игроку
+def countNum(hand):
+    sum = 0
+    for card in hand:
+        if card != 'A':
+            if card == 'B' or card == 'D' or card == 'K':
+                sum += 10
+            else:
+                sum += card
+    return sum
+
 def playPlayer():
     while True:
         print(getStatus())
-        answer = input(' Want another card? 1 - YES, otherwise - NO: ')
-        if answer == '1':
+        if input(' Want another card? 1 - YES, otherwise - NO: ') == '1':
             player.append(random.choice(cards))
-            if getSum(player) >= 21:
+            if getSum(player) >= LIMIT:
                 break
         else:
             break
 
-# Раздачка карт дилеру
 def playDealer():
     while getSum(dealer) < 17:
         dealer.append(random.choice(cards))
     getStatus()
 
-# Определение победителя
 def getResult():
-    if getSum(dealer) == 21:
+    if getSum(dealer) == LIMIT:
         print('Dealer have Black Jack :(')
-        return(False)
-    elif getSum(player) == 21:
+        return False
+    elif getSum(player) == LIMIT:
         print('You have Black Jack *_*')
-        return(True)
-    elif getSum(player) > 21:
+        return True
+    elif getSum(player) > LIMIT:
         print('You bust :::(')
-        return(False)
-    elif getSum(dealer) > 21:
+        return False
+    elif getSum(dealer) > LIMIT:
         print('Dealer bust T_T')
-        return(True)
+        return True
     elif getSum(player) > getSum(dealer):
         print('You Win!')
-        return(True)
+        return True
     else:
         print('You lost!')
-        return(False)
+        return False
 
-# Алгоритм одной раздачи
 def game():
     global player
     global dealer
@@ -73,27 +71,23 @@ def game():
     playDealer()
     return getResult()
 
-# Ставка игрока
 def betPlayer():
     bet = int(input('Choose your bet: '))
-    while bet > money or bet < 0:
+    while 0 > bet > money:
         bet = int(input('You don\'t have so much money. Try again: '))
     return bet
 
-# Игра
-print("Welcome to our casino!")
+print('Welcome to our casino! \nYour balance:', money, '$')
 while True:
-    if money > 0:
-        if input('Want to play? 1 - YES, otherwise - NO: ') == '1':
-            bet = betPlayer()
-            if game() == True:
-                money += bet * 0.5
-            else:
-                money -= bet
-            print('Your balance:', money)
-        else:
-            print('I\'ll see you next time. Your winnings:', money - 100)
-            break
-    else:
+    if money <= 0:
         print('Game Over! Your balance: 0 :(')
         break
+    if input('Want to play? 1 - YES, otherwise - NO: ') != '1':
+        print('I\'ll see you next time. Your winnings:', money - 100, '$')
+        break
+    bet = betPlayer()
+    if game() == True:
+        money += bet * 0.5
+    else:
+        money -= bet
+    print('Your balance:', money, '$')
