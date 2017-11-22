@@ -8,23 +8,28 @@ def getStatus():
     print('Player:', player, ' Dealer: ', dealer)
 
 def getSum(hand):
-    sum = countNum(hand)
+    num = countNum(hand)
+    eleven = countAce(hand)
+    one = 0
+    while num + one + eleven * 11 > LIMIT and eleven > 0:
+        eleven-=1
+        one+=1
+    return num + one + eleven * 11
+
+def countAce(hand):
+    ace = 0
     for card in hand:
         if card == 'A':
-            if sum > 10:
-                sum += 1
-            else:
-                sum += 11
-    return sum
+            ace += 1
+    return ace
 
 def countNum(hand):
     sum = 0
     for card in hand:
-        if card != 'A':
-            if card == 'B' or card == 'D' or card == 'K':
-                sum += 10
-            else:
-                sum += card
+        if card == 'B' or card == 'D' or card == 'K':
+            sum += 10
+        elif card != 'A':
+            sum += card
     return sum
 
 def playPlayer():
